@@ -63,13 +63,45 @@
     }
   }
 
-  function renderChangelog(root, entries) {
+  function validChangelogEntries(entries) {
     var valid = (Array.isArray(entries) ? entries : []).filter(function (e) {
       return e && nonEmptyString(e.title) && nonEmptyString(e.date);
     });
     valid.sort(function (a, b) {
       return a.date < b.date ? 1 : a.date > b.date ? -1 : 0;
     });
+    return valid;
+  }
+
+  function renderFooterRelease(root, entries) {
+    if (!root) {
+      return;
+    }
+    var valid = validChangelogEntries(entries);
+    root.replaceChildren();
+    if (!valid.length) {
+      root.textContent = "Release info unavailable";
+      return;
+    }
+    var latest = valid[0];
+    root.appendChild(document.createTextNode("Version "));
+    if (nonEmptyString(latest.version)) {
+      var version = document.createElement("span");
+      version.className = "site-footer__version";
+      version.textContent = latest.version;
+      root.appendChild(version);
+    } else {
+      root.appendChild(document.createTextNode("—"));
+    }
+    root.appendChild(document.createTextNode(" released "));
+    var releaseTime = document.createElement("time");
+    releaseTime.dateTime = latest.date;
+    releaseTime.textContent = latest.date;
+    root.appendChild(releaseTime);
+  }
+
+  function renderChangelog(root, entries) {
+    var valid = validChangelogEntries(entries);
     if (!valid.length) {
       message(root, "No changelog entries yet.");
       return;
@@ -108,9 +140,47 @@
     root.replaceChildren(list);
   }
 
+  /**
+   * FAQ uses native <details>/<summary>: each item toggles independently
+   * (multiple entries may stay open at once). Keyboard: Tab between summaries,
+   * Enter/Space toggles the focused item.
+   */
+  function renderFaq(root, entries) {
+    var valid = (Array.isArray(entries) ? entries : []).filter(function (e) {
+      return e && nonEmptyString(e.question) && nonEmptyString(e.answer);
+    });
+    if (!valid.length) {
+      message(root, "No FAQ entries yet.");
+      return;
+    }
+    var list = document.createElement("div");
+    list.className = "faq__list";
+    valid.forEach(function (entry) {
+      var item = document.createElement("details");
+      item.className = "faq__item";
+      var summary = document.createElement("summary");
+      summary.className = "faq__question";
+      summary.textContent = entry.question;
+      item.appendChild(summary);
+      var answer = document.createElement("div");
+      answer.className = "faq__answer";
+      var p = document.createElement("p");
+      p.textContent = entry.answer;
+      answer.appendChild(p);
+      item.appendChild(answer);
+      list.appendChild(item);
+    });
+    root.replaceChildren(list);
+  }
+
   function init() {
+    if (window.ecoPilotTheme && window.ecoPilotTheme.initThemeToggle) {
+      window.ecoPilotTheme.initThemeToggle();
+    }
+
     var sectionsRoot = document.getElementById("sections-root");
     var changelogRoot = document.getElementById("changelog-root");
+    var faqRoot = document.getElementById("faq-root");
 
     loadJson("content.json")
       .then(function (data) {
@@ -120,12 +190,24 @@
         message(sectionsRoot, "We couldn't load the status right now.");
       });
 
+    var footerRelease = document.getElementById("footer-release");
+
     loadJson("changelog.json")
       .then(function (data) {
         renderChangelog(changelogRoot, data);
+        renderFooterRelease(footerRelease, data);
       })
       .catch(function () {
         message(changelogRoot, "We couldn't load the changelog right now.");
+        renderFooterRelease(footerRelease, []);
+      });
+
+    loadJson("faq.json")
+      .then(function (data) {
+        renderFaq(faqRoot, data);
+      })
+      .catch(function () {
+        message(faqRoot, "We couldn't load the FAQ right now.");
       });
   }
 

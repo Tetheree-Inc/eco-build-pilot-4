@@ -1,5 +1,17 @@
 [
   {
+    "version": "1.2.0",
+    "date": "2026-11-03",
+    "title": "Footer release metadata",
+    "summary": "Footer shows latest changelog version and date, GitHub repo link, deploy time, and commit SHA."
+  },
+  {
+    "version": "1.1.0",
+    "date": "2026-11-03",
+    "title": "Header theme toggle",
+    "summary": "Light/dark theme control in the header with saved preference and early load to avoid flash."
+  },
+  {
     "version": "1.0.0",
     "date": "2026-11-02",
     "title": "Initial release",
