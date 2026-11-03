@@ -108,6 +108,39 @@
     root.replaceChildren(list);
   }
 
+  /**
+   * FAQ uses native <details>/<summary>: each item toggles independently
+   * (multiple entries may stay open at once). Keyboard: Tab between summaries,
+   * Enter/Space toggles the focused item.
+   */
+  function renderFaq(root, entries) {
+    var valid = (Array.isArray(entries) ? entries : []).filter(function (e) {
+      return e && nonEmptyString(e.question) && nonEmptyString(e.answer);
+    });
+    if (!valid.length) {
+      message(root, "No FAQ entries yet.");
+      return;
+    }
+    var list = document.createElement("div");
+    list.className = "faq__list";
+    valid.forEach(function (entry) {
+      var item = document.createElement("details");
+      item.className = "faq__item";
+      var summary = document.createElement("summary");
+      summary.className = "faq__question";
+      summary.textContent = entry.question;
+      item.appendChild(summary);
+      var answer = document.createElement("div");
+      answer.className = "faq__answer";
+      var p = document.createElement("p");
+      p.textContent = entry.answer;
+      answer.appendChild(p);
+      item.appendChild(answer);
+      list.appendChild(item);
+    });
+    root.replaceChildren(list);
+  }
+
   function init() {
     if (window.ecoPilotTheme && window.ecoPilotTheme.initThemeToggle) {
       window.ecoPilotTheme.initThemeToggle();
@@ -115,6 +148,7 @@
 
     var sectionsRoot = document.getElementById("sections-root");
     var changelogRoot = document.getElementById("changelog-root");
+    var faqRoot = document.getElementById("faq-root");
 
     loadJson("content.json")
       .then(function (data) {
@@ -130,6 +164,14 @@
       })
       .catch(function () {
         message(changelogRoot, "We couldn't load the changelog right now.");
+      });
+
+    loadJson("faq.json")
+      .then(function (data) {
+        renderFaq(faqRoot, data);
+      })
+      .catch(function () {
+        message(faqRoot, "We couldn't load the FAQ right now.");
       });
   }
 

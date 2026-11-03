@@ -1,0 +1,14 @@
+[
+  {
+    "question": "What is ECO?",
+    "answer": "ECO (Eco Build) is Tetheree’s pilot pipeline for shipping small, scoped changes to this static status site. Work orders define the scope; agents implement on a branch; CI and the Eco Build Gate must pass before GitHub Pages publishes updates."
+  },
+  {
+    "question": "How deploys work",
+    "answer": "Every push to main or develop triggers the Pages workflow. Production (main) is served at https://tetheree-inc.github.io/eco-build-pilot-4/ and DEV (develop) at https://tetheree-inc.github.io/eco-build-pilot-4/dev/. Deployments wait for the Eco Build Gate on the github-pages environment, then both branches publish as one GitHub Pages site."
+  },
+  {
+    "question": "Who to contact",
+    "answer": "For pilot access, work orders, or build failures, reach your Tetheree Eco Build coordinator or the team channel listed in your work order. Include the work order id, branch name, and link to the failing CI run when reporting issues."
+  }
+]
