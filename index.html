@@ -95,10 +95,29 @@
     <footer class="site-footer">
       <div class="site-footer__inner">
         <p class="site-footer__meta">
-          Deployed
-          <time id="build-date" datetime="__BUILD_DATE_ISO__">__BUILD_DATE__</time>
-          · commit
-          <code id="commit-sha">__COMMIT_SHA__</code>
+          <span id="footer-release" class="site-footer__release"
+            >Loading release info…</span
+          >
+          <span class="site-footer__sep" aria-hidden="true">·</span>
+          <a
+            id="footer-repo-link"
+            class="site-footer__link"
+            href="https://github.com/Tetheree-Inc/eco-build-pilot-4"
+            target="_blank"
+            rel="noopener noreferrer"
+            >Source on GitHub</a
+          >
+          <span class="site-footer__sep" aria-hidden="true">·</span>
+          <span class="site-footer__deploy">
+            Deployed
+            <time id="build-date" datetime="__BUILD_DATE_ISO__"
+              >__BUILD_DATE__</time
+            >
+          </span>
+          <span class="site-footer__sep" aria-hidden="true">·</span>
+          <span class="site-footer__commit">
+            commit <code id="commit-sha">__COMMIT_SHA__</code>
+          </span>
         </p>
       </div>
     </footer>
