@@ -63,13 +63,45 @@
     }
   }
 
-  function renderChangelog(root, entries) {
+  function validChangelogEntries(entries) {
     var valid = (Array.isArray(entries) ? entries : []).filter(function (e) {
       return e && nonEmptyString(e.title) && nonEmptyString(e.date);
     });
     valid.sort(function (a, b) {
       return a.date < b.date ? 1 : a.date > b.date ? -1 : 0;
     });
+    return valid;
+  }
+
+  function renderFooterRelease(root, entries) {
+    if (!root) {
+      return;
+    }
+    var valid = validChangelogEntries(entries);
+    root.replaceChildren();
+    if (!valid.length) {
+      root.textContent = "Release info unavailable";
+      return;
+    }
+    var latest = valid[0];
+    root.appendChild(document.createTextNode("Version "));
+    if (nonEmptyString(latest.version)) {
+      var version = document.createElement("span");
+      version.className = "site-footer__version";
+      version.textContent = latest.version;
+      root.appendChild(version);
+    } else {
+      root.appendChild(document.createTextNode("—"));
+    }
+    root.appendChild(document.createTextNode(" released "));
+    var releaseTime = document.createElement("time");
+    releaseTime.dateTime = latest.date;
+    releaseTime.textContent = latest.date;
+    root.appendChild(releaseTime);
+  }
+
+  function renderChangelog(root, entries) {
+    var valid = validChangelogEntries(entries);
     if (!valid.length) {
       message(root, "No changelog entries yet.");
       return;
@@ -158,12 +190,16 @@
         message(sectionsRoot, "We couldn't load the status right now.");
       });
 
+    var footerRelease = document.getElementById("footer-release");
+
     loadJson("changelog.json")
       .then(function (data) {
         renderChangelog(changelogRoot, data);
+        renderFooterRelease(footerRelease, data);
       })
       .catch(function () {
         message(changelogRoot, "We couldn't load the changelog right now.");
+        renderFooterRelease(footerRelease, []);
       });
 
     loadJson("faq.json")
