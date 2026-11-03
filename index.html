@@ -40,10 +40,36 @@
           aria-label="Switch to dark theme"
           aria-pressed="false"
         >
-          <span class="theme-toggle__icon" aria-hidden="true">☀</span>
+          <span class="theme-toggle__icon" aria-hidden="true">☾</span>
           <span class="theme-toggle__text">Dark</span>
         </button>
       </div>
+      <script>
+        (function () {
+          var theme = document.documentElement.getAttribute("data-theme");
+          if (theme !== "light" && theme !== "dark") {
+            return;
+          }
+          var button = document.getElementById("theme-toggle");
+          if (!button) {
+            return;
+          }
+          var next = theme === "light" ? "dark" : "light";
+          button.setAttribute(
+            "aria-label",
+            theme === "light" ? "Switch to dark theme" : "Switch to light theme"
+          );
+          button.setAttribute("aria-pressed", theme === "dark" ? "true" : "false");
+          var text = button.querySelector(".theme-toggle__text");
+          if (text) {
+            text.textContent = next === "dark" ? "Dark" : "Light";
+          }
+          var icon = button.querySelector(".theme-toggle__icon");
+          if (icon) {
+            icon.textContent = theme === "light" ? "☾" : "☀";
+          }
+        })();
+      </script>
     </header>
 
     <main class="site-main">
