@@ -109,6 +109,10 @@
   }
 
   function init() {
+    if (window.ecoPilotTheme && window.ecoPilotTheme.initThemeToggle) {
+      window.ecoPilotTheme.initThemeToggle();
+    }
+
     var sectionsRoot = document.getElementById("sections-root");
     var changelogRoot = document.getElementById("changelog-root");
 

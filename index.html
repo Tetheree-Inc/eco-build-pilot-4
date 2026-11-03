@@ -5,13 +5,44 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>ECO Pilot — Status</title>
     <link rel="icon" href="./assets/favicon.svg" type="image/svg+xml" />
+    <script>
+      (function () {
+        var key = "eco-pilot-theme";
+        var stored = null;
+        try {
+          stored = localStorage.getItem(key);
+        } catch (e) {}
+        var theme;
+        if (stored === "light" || stored === "dark") {
+          theme = stored;
+        } else {
+          theme = window.matchMedia("(prefers-color-scheme: light)").matches
+            ? "light"
+            : "dark";
+        }
+        document.documentElement.setAttribute("data-theme", theme);
+        document.documentElement.style.colorScheme = theme;
+      })();
+    </script>
     <link rel="stylesheet" href="./css/styles.css" />
   </head>
   <body>
     <header class="site-header">
       <div class="site-header__inner">
-        <h1 id="site-title" class="site-header__title">ECO Pilot</h1>
-        <p id="site-tagline" class="site-header__tagline">Pilot status page</p>
+        <div class="site-header__brand">
+          <h1 id="site-title" class="site-header__title">ECO Pilot</h1>
+          <p id="site-tagline" class="site-header__tagline">Pilot status page</p>
+        </div>
+        <button
+          type="button"
+          class="theme-toggle"
+          id="theme-toggle"
+          aria-label="Switch to dark theme"
+          aria-pressed="false"
+        >
+          <span class="theme-toggle__icon" aria-hidden="true">☀</span>
+          <span class="theme-toggle__text">Dark</span>
+        </button>
       </div>
     </header>
 
@@ -39,6 +70,7 @@
       </div>
     </footer>
 
+    <script src="./js/theme.js" defer></script>
     <script src="./js/main.js" defer></script>
   </body>
 </html>
